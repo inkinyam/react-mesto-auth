@@ -11,6 +11,7 @@ import EditProfilePopup from './EditProfilePopup.js';
 import UpdateAvatarPopup from './UpdateAvatarPopup.js';
 import AddPlacePopup from './AddPlacePopup.js'
 import Login from './Login.js';
+import Register from './Register.js';
 
 
 import api from "../utils/api.js";
@@ -159,9 +160,9 @@ const App = () => {
                             onCardDeleteClick = {handleCardDelete}
                             component={Main} />
 
-{/*             <Route path="/sign-up">
+           <Route path="/sign-up">
               <Register />
-            </Route> */}
+            </Route> 
 
             <Route path="/sign-in">
               <Login />
