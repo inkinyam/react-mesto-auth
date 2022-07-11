@@ -8,7 +8,7 @@ const InfoPopup = ({isOpen, onClose, confirmMessage}) => {
     <div className={`popup popup-info`+ (isOpen && ' popup_opened')}>
     <form className="popup__wrapper info-form" name={`infoForm`}>
       <button className="popup__button popup__button_type_exit" type="button" onClick = {onClose}></button>
-      <img className={`popup__info-img  ${handlePopupImage}`} alt="подтверждающее изображение"/>
+      <div className={`popup__info-img  ${handlePopupImage}`} ></div>
       <p className="popup__info-text">{handlePopupText}</p>
     </form>
   </div>

@@ -6,13 +6,13 @@ const UpdateAvatarPopup = ({isOpen, onClose, onUpdateAvatar}) => {
   /* создаем ref для аватара*/
   const avatar = React.useRef();
 
+  /*обновляем поля при открытии*/
+  React.useEffect(() => {avatar.current.value = ''}, [isOpen]);
+
   /* обработчик сабмита формы*/
   const handleSubmit = (e) => {
     e.preventDefault();
     onUpdateAvatar(avatar.current.value);
-    /*закрываем и очищаем форму*/   
-    onClose();
-    avatar.current.value='';
   }
 
   /* возвращаемый объект*/

@@ -84,6 +84,7 @@ const App = () => {
     api.postUserData(name, about)
       .then((userData)=>{
         getCurrentUser(userData);
+        closeAllPopups();
       })
       .catch((err) => console.error(err));
   }
@@ -93,6 +94,7 @@ const App = () => {
     api.postUserPhoto(avatar)
       .then((userData)=>{
         getCurrentUser(userData);
+        closeAllPopups();
       })
       .catch((err) => console.error(err));
   }
@@ -144,6 +146,7 @@ const App = () => {
     api.postCard(cardName, link)
       .then((newCard)=>{
         setCards([newCard, ...cards])
+        closeAllPopups();
       })
       .catch((err) => console.error(err));
   }
@@ -201,6 +204,8 @@ const App = () => {
     handleLogin(false);
   };
 
+
+/* Спасибо за подсказки, сделаю все обязательно <3 */
 
 
 /* возвращаемый объект */

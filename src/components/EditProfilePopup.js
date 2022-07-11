@@ -20,6 +20,12 @@ const EditProfilePopup = ({isOpen, onClose, onUpdateUser}) => {
     setDescription(e.target.value);
   }
 
+    /*обновляем значения инпутов при открытии*/
+    React.useEffect(() => {
+      setName(currentUser.name);
+      setDescription(currentUser.about);
+      }, [currentUser, isOpen]);
+
   /* После загрузки текущего пользователя из API его данные будут использованы в управляемых компонентах.*/
   React.useEffect(() => {
     setName(currentUser.name);
@@ -35,7 +41,6 @@ const EditProfilePopup = ({isOpen, onClose, onUpdateUser}) => {
       about: descriptionValue,
     });
 
-    onClose();
   }
 
   /*возвращаемый объект*/
