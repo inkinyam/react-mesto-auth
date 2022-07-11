@@ -47,10 +47,28 @@ const EditProfilePopup = ({isOpen, onClose, onUpdateUser}) => {
                     onClose  = {onClose}
                     onSubmit = {handleSubmit}>
                                               
-            <input value={nameValue} onChange={handleChangeName} type="text" className="popup__item popup__item_el_title" id="edit-form__title" name="popup_title" placeholder="Введите имя" minLength="2" maxLength="40" required />
+            <input value={nameValue} 
+                   onChange={handleChangeName} 
+                   type="text" 
+                   className="popup__item popup__item_el_title" 
+                   id="edit-form__title" 
+                   name="popup_title" 
+                   placeholder="Введите имя" 
+                   minLength="2" 
+                   maxLength="40" 
+                   required />
             <span className="popup__span-error edit-form__title-error"></span>
 
-            <input value={descriptionValue} onChange={handleChangeDescription} type="text" className="popup__item popup__item_el_subtitle" id="edit-form__subtitle" name="popup_sutitle" placeholder="Введите должность" minLength="2" maxLength="200" required />
+            <input value={descriptionValue} 
+                   onChange={handleChangeDescription} 
+                   type="text" 
+                   className="popup__item popup__item_el_subtitle" 
+                   id="edit-form__subtitle" 
+                   name="popup_sutitle" 
+                   placeholder="Введите должность" 
+                   minLength="2" 
+                   maxLength="200" 
+                   required />
             <span className="popup__span-error edit-form__subtitle-error"></span>
     </PopupWithForm>
   )

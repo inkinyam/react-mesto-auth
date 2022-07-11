@@ -10,7 +10,12 @@
 @import url(../src/blocks/header/__logo/header__logo.css);
 @import url(../src/blocks/content/content.css);
 @import url(../src/blocks/content/_visible/content_visible.css);
+@import url(../src/blocks/header/__container/header__container.css);
+@import url(../src/blocks/header/__username/header__username.css);
+@import url(../src/blocks/header/__button/header__button.css);
 
+
+/*блок loader*/
 @import url(../src/blocks/content-loader/content-loader.css);
 @import url(../src/blocks/content-loader/_visible/content-loader_visible.css);
 
@@ -76,4 +81,9 @@
 
 @import url(../src/blocks/popup/__span-error/popup__span-error.css);
 @import url(../src/blocks/popup/__span-error/_active/popup__span-error_active.css);
+
+@import url(../src/blocks/popup/__info-text/popup__info-text.css);
+@import url(../src/blocks/popup/__info-img/popup__info-img.css);
+@import url(../src/blocks/popup/__info-img/_type/popup__info-img_type_fail.css);
+@import url(../src/blocks/popup/__info-img/_type/popup__info-img_type_succes.css);
 

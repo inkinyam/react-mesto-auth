@@ -27,10 +27,26 @@ const AddPlacePopup = ({isOpen, onClose, onAddPlace}) => {
       onClose = {onClose}
       onSubmit = {handleSubmit}>
       
-      <input ref={cardName} type="text" className="popup__item popup__item_el_name" id="add-form__name" name="popup_title" placeholder="Название места" minLength="2" maxLength="30" required />
+      <input ref = {cardName} 
+             type = "text" 
+             className = "popup__item popup__item_el_name" 
+             id = "add-form__name" 
+             name = "popup_title" 
+             placeholder = "Название места" 
+             minLength = "2" 
+             maxLength = "30" 
+             required />
+
       <span className="popup__span-error add-form__name-error"></span>
 
-      <input ref={cardLink} type="url" className="popup__item popup__item_el_link" id="add-form__link"  name="popup_sutitle" placeholder="Ссылка на картинку" required />
+      <input ref = {cardLink} 
+             type = "url" 
+             className = "popup__item popup__item_el_link" 
+             id = "add-form__link"  
+             name = "popup_sutitle" 
+             placeholder = "Ссылка на картинку" 
+             required />
+
       <span className="popup__span-error add-form__link-error"></span>
     </PopupWithForm>
   )

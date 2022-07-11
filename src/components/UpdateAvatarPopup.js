@@ -24,7 +24,14 @@ const UpdateAvatarPopup = ({isOpen, onClose, onUpdateAvatar}) => {
       onClose  = {onClose}
       onSubmit = {handleSubmit}>
     
-      <input ref={avatar} type="url" className="popup__item popup__item_el_avatar" id="update-avatar-form__avatar"  name="inputAvatarLink" placeholder="Ссылка на новую картинку" required />
+      <input ref = {avatar} 
+             type = "url" 
+             className = "popup__item popup__item_el_avatar" 
+             id = "update-avatar-form__avatar"  
+             name = "inputAvatarLink" 
+             placeholder = "Ссылка на новую картинку" 
+             required />
+
       <span className="popup__span-error update-avatar-form__avatar-error"></span>
     </PopupWithForm>
   )

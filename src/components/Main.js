@@ -25,7 +25,11 @@ const Main = ({onEditProfile, onAddPlace, onEditAvatar, onCardClick, cards, onCa
       <section className="places" aria-label="Фотографии">
 
         {cards.map(card => (
-             <Card key={card._id} card={card} onCardClick={onCardClick} onLikeClick={onCardLikeClick} onDeleteClick={onCardDeleteClick} />
+             <Card key = {card._id} 
+                   card = {card} 
+                   onCardClick = {onCardClick} 
+                   onLikeClick = {onCardLikeClick} 
+                   onDeleteClick = {onCardDeleteClick} />
         ))}
 
        </section>

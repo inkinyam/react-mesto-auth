@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import { Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 
 import Header from './Header.js'
 import Main from './Main.js'
@@ -10,11 +10,12 @@ import ImagePopup from './ImagePopup.js';
 import EditProfilePopup from './EditProfilePopup.js';
 import UpdateAvatarPopup from './UpdateAvatarPopup.js';
 import AddPlacePopup from './AddPlacePopup.js'
+import InfoPopup from './InfoPopup.js';
 import Login from './Login.js';
 import Register from './Register.js';
 
-
 import api from "../utils/api.js";
+import * as mestoAuth from "../utils/mestoAuth.js"
 import { CurrentUserContext } from '../context/CurrentUserContext.js'; 
 
 
@@ -31,15 +32,20 @@ const App = () => {
   }, []);
 
   /* хуки на открытие попапов */
-  const [isEditProfilePopupOpen, openEditPopup]          = React.useState(false);
-  const [isAddPlacePopupOpen, openAddPopup]              = React.useState(false);
+  const [isEditProfilePopupOpen, openEditPopup] = React.useState(false);
+  const [isAddPlacePopupOpen, openAddPopup] = React.useState(false);
   const [isUpdateAvatarPopupOpen, openUpdateAvatarPopup] = React.useState(false);
+  const [isInfoPopupOpen, openInfoPopup] = React.useState(false);
 
-  //const [loggedIn, handleLogin]                          = React.useState(false); //cтейт для отслеживания залогинился ли пользователь
-  const loggedIn = false;
+  /*хуки и стейты для авторизации и регистрации пользователей */
+  const [loggedIn, handleLogin]  = React.useState(false); //cтейт для отслеживания залогинился ли пользователь
+  
+  const [email, setEmail] = React.useState('test@test.ru');
+  const [confirmMessage, setСonfirmMessage] = React.useState(false); //стейт для отображения результата на infoPopup
+  const navigate = useNavigate();
 
   /*хук на определение выбранной карточки*/
-  const [selectedCard, setSelectedCard]                  = React.useState({name: '', link: ''});
+  const [selectedCard, setSelectedCard] = React.useState({name: '', link: ''});
 
   /*хук карточек*/ 
   const [cards, setCards] = React.useState([]);
@@ -69,6 +75,7 @@ const App = () => {
     openEditPopup(false);
     openAddPopup(false);
     openUpdateAvatarPopup(false);
+    openInfoPopup(false);
     setSelectedCard({name: '', link: ''});
   }
 
@@ -103,7 +110,7 @@ const App = () => {
     setCards((state) => state.map((c) => c._id === id ? newCard : c));
   }
 
-  /* обработчик нажатия кнопки лайк на карточке*/ 
+/* обработчик нажатия кнопки лайк на карточке*/ 
   const handleCardLike = (card) => {
      const isLiked = card.likes.some(i => i._id === currentUser._id);
 
@@ -123,7 +130,7 @@ const App = () => {
       }
   }
 
-  /* обработчик нажатия кнопки удаления на карточке*/ 
+/*обработчик нажатия кнопки удаления на карточке*/ 
   const handleCardDelete = (card) => {
     api.deleteCard(card._id)
       .then (()=>{
@@ -132,8 +139,7 @@ const App = () => {
       .catch((err) => console.error(err));
   }
 
-  /*обработчик добавления нового фото*/
-
+/*обработчик добавления нового фото*/
   const handleAddPlaceSubmit = ({cardName, link}) => {
     api.postCard(cardName, link)
       .then((newCard)=>{
@@ -142,59 +148,127 @@ const App = () => {
       .catch((err) => console.error(err));
   }
   
+/*регистрация пользователя*/
+  const onRegister = (password, email) => {
+    mestoAuth.register(password, email)
+      .then(() => {
+        setСonfirmMessage(true); //показываем уведомление об успешной регистрации
+        navigate('/sign-in');
+      })
+      .catch(err => {
+        setСonfirmMessage(false); //показываем уведомление об ошибке при регистрации
+        console.log(err);
+      })
+      .finally(() => {
+        openInfoPopup(true);
+      });
+  }
+
+/*отправляем запрос на авторизацию через api и при положительном ответе, 
+  логиним юзера, сохраняем токен для дальнейшей работы*/
+  const onLogin = (password, email) => {
+    mestoAuth.authorize (password, email)
+      .then(res => {
+        localStorage.setItem('token', res.token);
+        setEmail(email);
+        handleLogin(true);
+        navigate('/');
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+
+/*проверяем корректен ли токен, который хранится в local storage*/
+  React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      mestoAuth.checkToken(token)
+        .then(res => { 
+          setEmail(res.data.email);
+          handleLogin(true);
+          navigate('/');
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [navigate])
+ 
+/*удаляем из local storage токен и разлогиниваемся*/
+  const onSignOut = () => {
+    localStorage.removeItem('token');
+    handleLogin(false);
+  };
+
+
+
 /* возвращаемый объект */
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="App">
         <div className="page">
-          <Header />
-          <Switch>
-            <ProtectedRoute path="/main"  
-                            loggedIn={loggedIn} 
-                            onEditProfile     = {handleOpenEditPopup}
-                            onAddPlace        = {handleOpenAddPopup} 
-                            onEditAvatar      = {handleOpenUpdateAvatarPopup}
-                            onCardClick       = {handleCardClick}
-                            cards             = {cards}
-                            onCardLikeClick   = {handleCardLike}
-                            onCardDeleteClick = {handleCardDelete}
-                            component={Main} />
+           
+          <Routes>
+            <Route  path="/"
+                    element = {<ProtectedRoute loggedIn={loggedIn}>
+                                 <Header onSignOut   = {onSignOut} 
+                                         email       = {email} 
+                                         linkTo      = {'/'} 
+                                         linkText    = {'Выйти'} />
+                                        
+                                 <Main onEditProfile     = {handleOpenEditPopup}
+                                       onAddPlace        = {handleOpenAddPopup} 
+                                       onEditAvatar      = {handleOpenUpdateAvatarPopup}
+                                       onCardClick       = {handleCardClick}
+                                       cards             = {cards}
+                                       onCardLikeClick   = {handleCardLike}
+                                       onCardDeleteClick = {handleCardDelete}/>
+                              </ProtectedRoute>}>
+            </Route>
 
-           <Route path="/sign-up">
-              <Register />
+            <Route path="/sign-up"
+                   element = {<Register onRegister={onRegister}/> }>
             </Route> 
 
-            <Route path="/sign-in">
-              <Login />
+            <Route path="/sign-in"
+                   element = {<Login onLogin={onLogin}/> }>
             </Route>
-            <Route exact path="/">
-              {loggedIn ? <Redirect to="/main" /> : <Redirect to="/sign-in" />}
-            </Route>
-          </Switch>
+
+            <Route path="*"
+                   element = {loggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" /> }>
+            </Route>        
+          </Routes>
         
           <Footer />
  
+          {/* попапы */}
           <EditProfilePopup isOpen       = {isEditProfilePopupOpen} 
                             onClose      = {closeAllPopups} 
                             onUpdateUser = {handleUpdateUser} /> 
 
 
-          <UpdateAvatarPopup isOpen={isUpdateAvatarPopupOpen} 
-                             onClose={closeAllPopups} 
-                             onUpdateAvatar={handleUpdateAvatar} />
+          <UpdateAvatarPopup isOpen         = {isUpdateAvatarPopupOpen} 
+                             onClose        = {closeAllPopups} 
+                             onUpdateAvatar = {handleUpdateAvatar} />
 
 
-          <AddPlacePopup isOpen = {isAddPlacePopupOpen} 
-                         onClose = {closeAllPopups} 
+          <AddPlacePopup isOpen     = {isAddPlacePopupOpen} 
+                         onClose    = {closeAllPopups} 
                          onAddPlace = {handleAddPlaceSubmit}/>
 
 
           <ImagePopup card    = {selectedCard}
                       onClose = {closeAllPopups}/>
+
+          <InfoPopup  isOpen    = {isInfoPopupOpen}
+                      onClose   = {closeAllPopups}
+                      confirmMessage = {confirmMessage}/>
+        
         </div>
       </div>
       </CurrentUserContext.Provider>
   );
 }
 
-export default withRouter(App);
+export default App;
