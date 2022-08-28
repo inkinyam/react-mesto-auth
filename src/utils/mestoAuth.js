@@ -7,7 +7,7 @@ const checkRes = (res) => {
   if (res.ok) {
     return res.json();
   }
-  return Promise.reject(`Что-то не так! Ошибка: ${res.status}`);
+  return Promise.reject(res);
 }
 
 /*функция для отправки запроса на регистрацию*/

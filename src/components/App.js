@@ -160,7 +160,7 @@ const App = () => {
       })
       .catch(err => {
         setСonfirmMessage(false); //показываем уведомление об ошибке при регистрации
-        console.log(err);
+        err.json().then(err => console.log(err.error)) //отображаем ошибку, которая вернулась из ответа сервера в консоли
       })
       .finally(() => {
         openInfoPopup(true);
